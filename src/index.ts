@@ -54,3 +54,40 @@
 
   console.log(Wagner)
 }
+
+{
+// UNITON TYPES
+
+function printClientId(id: number | string) {
+
+  console.log(`O id do cliente é ${id}`)
+}
+
+printClientId('100')
+
+}
+{
+  // TYPE ALIASES
+  type idade = number | string
+
+  let idade: idade = 34;
+  let idade2: idade = "34"
+
+}
+{
+  // VALORES OPCIONAIS
+  type Customer = {
+    firstName: string,
+    lasName?: string, // PROPRIEDADE OPCIONAL
+    age: number
+  }
+
+}
+{
+  // TYPE ASSERTION
+  const button = document.getElementById("button") as HTMLButtonElement;
+
+  button.addEventListener('click', event =>{
+    const mouseEvent = event as MouseEvent
+  })
+}
