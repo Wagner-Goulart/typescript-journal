@@ -1,93 +1,80 @@
 {
-  // DECLARAÇÃO EXPLICITADO - ANNOTATION
-  let number: number = 40;
-  let string: string = "Texto";
-  let boolean: boolean = true;
+  //GENERICS E DECORATORS
+
+// CRIA UM INTERCADE QUE ACEITA UM GENERIC DO TIPO <T>
+interface UserInterface<T> {
+  name: string,
+  age: number,
+  data: T[] // DATA SERÁ DE ARRAY DE <T> 
+}
+
+// AO SE FAZER O USO DA INTERFACE É PASSADO QUE O TIPO STRING
+const person: UserInterface<String> = {
+  name:'Wagner',
+  age: 34,
+  data: ["Hello World"]
+}
+
+function persona<T extends number | string>(data: T) {
+  return data
+}
+
+const p = persona("Hello World")
+
 }
 
 {
-  // DECLARAÇÃO IMPLICITADO - INFEREENCIA
 
-  // Se FIZERMOS ISSO O TYPESCRIPT IRA ATRIBUI O TIPO NUMBER A VARIAVEL
-  // POIS O PRIMEIRO VALOR ATRIBUIDO É UM NUMERO
-  let variavelNumero = 10;
-
-  // E NÃO SERÁ PERMITIDO REDECLARAR ESSA VARIÁVEL COM OUTRO TIPO
-  variavelNumero = 0;
-}
-{
-  interface MathFunctionParams {
-    number1: number;
-    number2: number;
-  }
-
-  function sumNums(nums: MathFunctionParams) {
-    return nums.number1 + nums.number2;
-  }
-
-  //console.log(sumNums({number1: 10, number2: 30}))
-}
-
-{
-  interface Person {
-    name: string;
-    age: number;
-    job: string;
-    isEmployed: boolean;
-  }
-
-  class Developer implements Person {
-    name: string;
-    age: number;
-    job: string;
-    isEmployed: boolean;
-
-    constructor(name: string, age: number, job: string, isEmployed: boolean) {
-      (this.name = name),
-        (this.age = age),
-        (this.job = job),
-        (this.isEmployed = isEmployed);
+  function apiVersion(version : string) {
+    return (target: any) => {
+      Object.assign(target.prototype, {__version: version})
     }
   }
 
-  const Wagner = new Developer("Wagner", 34, "Desenvolvedor", false);
+  @apiVersion("1.0.0")
+  class Api {
 
-  console.log(Wagner)
-}
-
-{
-// UNITON TYPES
-
-function printClientId(id: number | string) {
-
-  console.log(`O id do cliente é ${id}`)
-}
-
-printClientId('100')
-
-}
-{
-  // TYPE ALIASES
-  type idade = number | string
-
-  let idade: idade = 34;
-  let idade2: idade = "34"
-
-}
-{
-  // VALORES OPCIONAIS
-  type Customer = {
-    firstName: string,
-    lasName?: string, // PROPRIEDADE OPCIONAL
-    age: number
   }
 
-}
-{
-  // TYPE ASSERTION
-  const button = document.getElementById("button") as HTMLButtonElement;
 
-  button.addEventListener('click', event =>{
-    const mouseEvent = event as MouseEvent
-  })
+  function ObjectType(__name: string) {
+    return(target: any)=>{
+      Object.assign(target.prototype, {__name})
+    }
+  }
+
+  function minLength(length: number){
+    return (target: any, key: string)=>{
+      let _value = target[key]
+
+      const gettter = ()=> _value;
+      const setter = (value: string)=> {
+        if(value.length < 3) {
+          throw new Error(`Exptect ${key} to have more ${length}`)
+        }
+        _value = value
+      }
+
+      Object.defineProperty(target, key, {
+        get: gettter,
+        set: setter
+      })
+    }
+  }
+
+  @ObjectType("user")
+  class User {
+    
+    @minLength(3)
+    name: string
+
+    constructor(name: string){
+      this.name = name
+    }
+  }
+
+  const user = new User("Wagner")
+
+  console.log(user)
+
 }
